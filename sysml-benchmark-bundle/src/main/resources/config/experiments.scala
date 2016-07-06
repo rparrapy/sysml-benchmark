@@ -61,8 +61,27 @@ class experiments extends ApplicationContextAware {
       config  = ConfigFactory.parseString("")
     )
 
+    val `linreg.data.sample.features` = new YarnExperiment(
+      command =
+        s"""
+           |$${app.path.apps}/SystemML.jar \\
+           |org.apache.sysml.api.DMLScript -f $${app.path.apps}/scripts/utils/sample.dml \\
+           |-nvargs X=output=$${system.hadoop-2.path.output}/linreg/linRegData.csv \\
+           |sv=output=$${system.hadoop-2.path.output}/linreg/perc.csv \\
+           |O=output=$${system.hadoop-2.path.output}/linreg/linRegDataParts ofmt=csv
+         """.stripMargin.trim,
+      systems = Set(),
+      runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+      runs    = runs,
+      inputs  = Set(),
+      outputs = Set(ctx.getBean("linreg.output.samples", classOf[ExperimentOutput])),
+      name    = "linreg.data.sample.features",
+      config  = ConfigFactory.parseString("")
+    )
+
     new ExperimentSuite(Seq(
-      `linreg.data.generate.features`
+    `linreg.data.generate.features`,
+    `linreg.data.sample.features`
     ))
   }
 }

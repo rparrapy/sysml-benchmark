@@ -45,8 +45,9 @@ class systems extends ApplicationContextAware {
   def `yarn-2.7.1`: Yarn = new Yarn(
     version      = "2.7.1",
     configKey    = "hadoop-2",
-    lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2])),
+    lifespan     = Lifespan.SUITE,
+    //dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2])),
+    dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
 }
