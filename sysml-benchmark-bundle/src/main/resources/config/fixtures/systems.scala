@@ -3,7 +3,7 @@ package config.fixtures
 import com.samskivert.mustache.Mustache
 import org.peelframework.core.beans.system.Lifespan
 import org.peelframework.flink.beans.system.Flink
-import org.peelframework.hadoop.beans.system.HDFS2
+import org.peelframework.hadoop.beans.system.{Yarn, HDFS2}
 import org.peelframework.spark.beans.system.Spark
 import org.springframework.context.annotation.{Bean, Configuration}
 import org.springframework.context.{ApplicationContext, ApplicationContextAware}
@@ -44,7 +44,7 @@ class systems extends ApplicationContextAware {
   @Bean(name = Array("yarn-2.7.1"))
   def `yarn-2.7.1`: Yarn = new Yarn(
     version      = "2.7.1",
-    configKey    = "yarn",
+    configKey    = "hadoop-2",
     lifespan     = Lifespan.EXPERIMENT,
     dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2])),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
