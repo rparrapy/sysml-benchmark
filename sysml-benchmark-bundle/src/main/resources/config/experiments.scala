@@ -47,10 +47,10 @@ class experiments extends ApplicationContextAware {
     val `linreg.data.generate.features` = new YarnExperiment(
       command =
         s"""
-           |jar $${app.path.apps}/SystemML.jar \\
+           |$${app.path.apps}/SystemML.jar \\
            |org.apache.sysml.api.DMLScript -f $${app.path.apps}/scripts/datagen/genLinearRegressionData.dml \\
            |-nvargs numSamples=1000 numFeatures=50 maxFeatureValue=5 maxWeight=5 \\
-           |addNoise=FALSE b=0 sparsity=0.7 output=linRegData.csv format=csv perc=0.5
+           |addNoise=FALSE b=0 sparsity=0.7 output=$${system.hadoop-2.path.output}/linreg/linRegData.csv format=csv perc=0.5
         """.stripMargin.trim,
       systems = Set(),
       runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),

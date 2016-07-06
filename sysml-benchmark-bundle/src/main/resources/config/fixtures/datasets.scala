@@ -29,7 +29,7 @@ class datasets extends ApplicationContextAware {
   // ---------------------------------------------------
   @Bean(name = Array("linreg.output.features"))
   def `linreg.output`: ExperimentOutput = new ExperimentOutput(
-    path = "${system.hadoop-2.path.output}/linreg/features",
+    path = "${system.hadoop-2.path.output}/linreg/linRegData.csv",
     fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
   )
 }
