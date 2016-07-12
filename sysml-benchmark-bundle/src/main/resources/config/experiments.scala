@@ -1,9 +1,11 @@
 package config
 
 import com.typesafe.config.ConfigFactory
-import org.peelframework.core.beans.data.ExperimentOutput
+import org.peelframework.core.beans.data.{CopiedDataSet, DataSet, ExperimentOutput, GeneratedDataSet}
 import org.peelframework.core.beans.experiment.ExperimentSuite
 import org.peelframework.hadoop.beans.experiment.YarnExperiment
+import org.peelframework.spark.beans.experiment.SparkExperiment
+import org.peelframework.spark.beans.system.Spark
 import org.peelframework.hadoop.beans.system.{Yarn, HDFS2}
 import org.springframework.context.annotation._
 import org.springframework.context.{ApplicationContext, ApplicationContextAware}
@@ -42,46 +44,28 @@ class experiments extends ApplicationContextAware {
   // Experiments
   // ---------------------------------------------------
 
-  @Bean(name = Array("linreg.data.generate"))
-  def `linreg.data.generate`: ExperimentSuite = {
-    val `linreg.data.generate.features` = new YarnExperiment(
+  @Bean(name = Array("linreg.generate.data"))
+  def `linreg.generate.data`: ExperimentSuite = {
+    val `linreg.generate.data.spark` = new SparkExperiment(
+      name    = "linreg.generate.data.spark",
       command =
         s"""
+           |--class org.apache.sysml.api.DMLScript \\
            |$${app.path.apps}/SystemML.jar \\
-           |org.apache.sysml.api.DMLScript -f $${app.path.apps}/scripts/datagen/genLinearRegressionData.dml \\
-           |-nvargs numSamples=1000 numFeatures=50 maxFeatureValue=5 maxWeight=5 \\
-           |addNoise=FALSE b=0 sparsity=0.7 output=$${system.hadoop-2.path.output}/linreg/linRegData.csv format=csv perc=0.5
-        """.stripMargin.trim,
-      systems = Set(),
-      runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
-      runs    = runs,
-      inputs  = Set(),
-      outputs = Set(ctx.getBean("linreg.output.features", classOf[ExperimentOutput])),
-      name    = "linreg.data.generate.features",
-      config  = ConfigFactory.parseString("")
-    )
-
-    val `linreg.data.sample.features` = new YarnExperiment(
-      command =
-        s"""
-           |$${app.path.apps}/SystemML.jar \\
-           |org.apache.sysml.api.DMLScript -f $${app.path.apps}/scripts/utils/sample.dml \\
-           |-nvargs X=output=$${system.hadoop-2.path.output}/linreg/linRegData.csv \\
-           |sv=output=$${system.hadoop-2.path.output}/linreg/perc.csv \\
-           |O=output=$${system.hadoop-2.path.output}/linreg/linRegDataParts ofmt=csv
+           |-f $${app.path.apps}/scripts/utils/splitXY.dml \\
+           |-nvargs X=$${system.hadoop-2.path.output}/linRegData.csv \\
+           |y=51 OX=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
+           |OY=$${system.hadoop-2.path.output}/linRegData.train.labels.csv ofmt=csv
          """.stripMargin.trim,
-      systems = Set(),
-      runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+      config  = ConfigFactory.parseString(""),
       runs    = runs,
-      inputs  = Set(),
-      outputs = Set(ctx.getBean("linreg.output.samples", classOf[ExperimentOutput])),
-      name    = "linreg.data.sample.features",
-      config  = ConfigFactory.parseString("")
+      runner  = ctx.getBean("spark-1.6.0", classOf[Spark]),
+      inputs  = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet])),
+      outputs = Set()
     )
 
     new ExperimentSuite(Seq(
-    `linreg.data.generate.features`,
-    `linreg.data.sample.features`
+    `linreg.generate.data.spark`
     ))
   }
 }
