@@ -51,16 +51,4 @@ class datasets extends ApplicationContextAware {
     dst = "${system.hadoop-2.path.output}/linRegData.csv",
     fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
   )
-
-//  @Bean(name = Array("linreg.dataset.train.data"))
-//  def `linreg.output.samples`: ExperimentOutput = new ExperimentOutput(
-//    path = "${system.hadoop-2.path.output}/linRegData.train.data.csv",
-//    fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
-//  )
-//
-//  @Bean(name = Array("linreg.dataset.train.labels"))
-//  def `linreg.output.perc`: ExperimentOutput = new ExperimentOutput(
-//    path = "${system.hadoop-2.path.output}/linRegData.train.labels.csv",
-//    fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
-//  )
 }

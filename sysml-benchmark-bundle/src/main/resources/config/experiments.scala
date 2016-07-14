@@ -58,7 +58,7 @@ class experiments extends ApplicationContextAware {
            |OY=$${system.hadoop-2.path.output}/linRegData.train.labels.csv ofmt=csv
          """.stripMargin.trim,
       config  = ConfigFactory.parseString(""),
-      runs    = runs,
+      runs    = 1,
       runner  = ctx.getBean("spark-1.6.0", classOf[Spark]),
       inputs  = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet])),
       outputs = Set()
@@ -66,6 +66,31 @@ class experiments extends ApplicationContextAware {
 
     new ExperimentSuite(Seq(
     `linreg.generate.data.spark`
+    ))
+  }
+
+  @Bean(name = Array("linreg.train.ds"))
+  def `linreg.train.ds`: ExperimentSuite = {
+    val `linreg.train.spark` = new SparkExperiment(
+      name    = "linreg.train.spark",
+      command =
+        s"""
+           |--class org.apache.sysml.api.DMLScript \\
+           |$${app.path.apps}/SystemML.jar \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -nvargs \\
+           |X=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
+           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.csv \\
+           |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
+      inputs = Set(),
+      outputs = Set()
+    )
+
+    new ExperimentSuite(Seq(
+      `linreg.train.spark`
     ))
   }
 }
