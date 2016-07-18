@@ -59,7 +59,7 @@ class systems extends ApplicationContextAware {
   def `hdfs-2.7.1`: HDFS2 = new HDFS2(
     version      = "2.7.1",
     configKey    = "hadoop-2",
-    lifespan     = Lifespan.PROVIDED,
+    lifespan     = Lifespan.SUITE,
     dependencies = Set(),
     mc           = ctx.getBean(classOf[Compiler])
   )

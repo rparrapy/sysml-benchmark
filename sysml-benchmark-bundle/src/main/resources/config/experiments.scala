@@ -109,9 +109,29 @@ class experiments extends ApplicationContextAware {
       outputs = Set()
     )
 
+    val `linreg.train.yarn` = new YarnExperiment(
+      name    = "linreg.train.yarn",
+      command =
+        s"""
+           |jar $${app.path.apps}/SystemML.jar \\
+           |org.apache.sysml.api.DMLScript \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -nvargs \\
+           |X=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
+           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.csv \\
+           |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+      inputs = Set(),
+      outputs = Set(),
+      systems = Set()
+    )
+
     new ExperimentSuite(Seq(
       `linreg.train.spark`,
-      `linreg.train.flink`
+      `linreg.train.flink`,
+      `linreg.train.yarn`
     ))
   }
 }
