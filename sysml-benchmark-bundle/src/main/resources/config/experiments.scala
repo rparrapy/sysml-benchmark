@@ -6,6 +6,8 @@ import org.peelframework.core.beans.experiment.ExperimentSuite
 import org.peelframework.hadoop.beans.experiment.YarnExperiment
 import org.peelframework.spark.beans.experiment.SparkExperiment
 import org.peelframework.spark.beans.system.Spark
+import org.peelframework.flink.beans.system.Flink
+import org.peelframework.flink.beans.experiment.FlinkExperiment
 import org.peelframework.hadoop.beans.system.{Yarn, HDFS2}
 import org.springframework.context.annotation._
 import org.springframework.context.{ApplicationContext, ApplicationContextAware}
@@ -89,8 +91,27 @@ class experiments extends ApplicationContextAware {
       outputs = Set()
     )
 
+    val `linreg.train.flink` = new FlinkExperiment(
+      name    = "linreg.train.flink",
+      command =
+        s"""
+           |-c org.apache.sysml.api.DMLScript \\
+           |$${app.path.apps}/SystemML.jar \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -nvargs \\
+           |X=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
+           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.csv \\
+           |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
+      inputs = Set(),
+      outputs = Set()
+    )
+
     new ExperimentSuite(Seq(
-      `linreg.train.spark`
+      `linreg.train.spark`,
+      `linreg.train.flink`
     ))
   }
 }
