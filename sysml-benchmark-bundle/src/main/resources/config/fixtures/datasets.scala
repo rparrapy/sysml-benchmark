@@ -14,6 +14,7 @@ import org.peelframework.spark.beans.system.Spark
 import org.peelframework.spark.beans.job.SparkJob
 import org.springframework.context.{ApplicationContext, ApplicationContextAware}
 import org.springframework.context.annotation.{Bean, Configuration}
+import eu.stratosphere.benchmarks.systemml.yarn.YarnJob
 
 /** `LinRegDS` experiment fixtures for the 'sysml-benchmark' bundle. */
 @Configuration
@@ -30,16 +31,17 @@ class datasets extends ApplicationContextAware {
   // Data Generators
   // ---------------------------------------------------
   @Bean(name = Array("linreg.datagen.features"))
-  def `datagen.linreg.features`: SparkJob = new SparkJob(
+  def `datagen.linreg.features`: YarnJob = new YarnJob(
     command =
       s"""
-         |--class org.apache.sysml.api.DMLScript \\
-         |$${app.path.apps}/SystemML.jar \\
+         |jar $${app.path.apps}/SystemML.jar \\
+	 |org.apache.sysml.api.DMLScript \\
          |-f $${app.path.apps}/scripts/datagen/genLinearRegressionData.dml \\
-         |-nvargs numSamples=1000 numFeatures=50 maxFeatureValue=5 maxWeight=5 \\
-         |addNoise=FALSE b=0 sparsity=0.7 output=$${system.hadoop-2.path.output}/linRegData.csv format=csv perc=0.5
+         |-nvargs numSamples=10000000 numFeatures=1000 maxFeatureValue=5 maxWeight=5 \\
+         |addNoise=FALSE b=0 sparsity=1.0 output=$${system.hadoop-2.path.output}/linRegData.csv format=csv perc=0.5
         """.stripMargin.trim,
-    runner  = ctx.getBean("spark-1.6.0", classOf[Spark])
+    runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+    timeout = 6000
   )
 
   // ---------------------------------------------------
@@ -47,7 +49,7 @@ class datasets extends ApplicationContextAware {
   // ---------------------------------------------------
   @Bean(name = Array("linreg.dataset.features"))
   def `linreg.output.features`: DataSet = new GeneratedDataSet(
-    src = ctx.getBean("linreg.datagen.features", classOf[SparkJob]),
+    src = ctx.getBean("linreg.datagen.features", classOf[YarnJob]),
     dst = "${system.hadoop-2.path.output}/linRegData.csv",
     fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
   )

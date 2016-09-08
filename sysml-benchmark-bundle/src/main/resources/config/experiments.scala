@@ -48,12 +48,12 @@ class experiments extends ApplicationContextAware {
 
   @Bean(name = Array("linreg.generate.data"))
   def `linreg.generate.data`: ExperimentSuite = {
-    val `linreg.generate.data.spark` = new SparkExperiment(
-      name    = "linreg.generate.data.spark",
+    val `linreg.generate.data.yarn` = new YarnExperiment(
+      name    = "linreg.generate.data.yarn",
       command =
         s"""
-           |--class org.apache.sysml.api.DMLScript \\
-           |$${app.path.apps}/SystemML.jar \\
+           | $${app.path.apps}/SystemML.jar \\
+           |org.apache.sysml.api.DMLScript \\
            |-f $${app.path.apps}/scripts/utils/splitXY.dml \\
            |-nvargs X=$${system.hadoop-2.path.output}/linRegData.csv \\
            |y=51 OX=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
@@ -61,13 +61,15 @@ class experiments extends ApplicationContextAware {
          """.stripMargin.trim,
       config  = ConfigFactory.parseString(""),
       runs    = 1,
-      runner  = ctx.getBean("spark-1.6.0", classOf[Spark]),
+      runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       inputs  = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet])),
-      outputs = Set()
+      outputs = Set(),
+      systems = Set()
+
     )
 
     new ExperimentSuite(Seq(
-    `linreg.generate.data.spark`
+    `linreg.generate.data.yarn`
     ))
   }
 

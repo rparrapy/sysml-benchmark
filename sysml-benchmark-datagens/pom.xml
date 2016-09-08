@@ -71,14 +71,14 @@
             </plugin>
 
             <!-- Scala compiler -->
-            <plugin>
+<!--            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <configuration>
                     <scalaCompatVersion>${scala.tools.version}</scalaCompatVersion>
                     <scalaVersion>${scala.version}</scalaVersion>
                 </configuration>
-            </plugin>
+            </plugin> -->
 
             <!-- Shade Package (Create package with dependencies) -->
             <plugin>
