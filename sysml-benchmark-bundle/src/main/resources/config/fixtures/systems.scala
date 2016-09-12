@@ -29,7 +29,7 @@ class systems extends ApplicationContextAware {
     version      = "1.0.3",
     configKey    = "flink",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2])),
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn])),
     //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
@@ -39,7 +39,7 @@ class systems extends ApplicationContextAware {
     version      = "1.6.0",
     configKey    = "spark",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2])),
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn])),
     //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )

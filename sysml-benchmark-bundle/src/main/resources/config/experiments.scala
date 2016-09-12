@@ -55,9 +55,9 @@ class experiments extends ApplicationContextAware {
            | $${app.path.apps}/SystemML.jar \\
            |org.apache.sysml.api.DMLScript \\
            |-f $${app.path.apps}/scripts/utils/splitXY.dml \\
-           |-nvargs X=$${system.hadoop-2.path.output}/linRegData.csv \\
-           |y=51 OX=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
-           |OY=$${system.hadoop-2.path.output}/linRegData.train.labels.csv ofmt=csv
+           |-nvargs X=$${system.hadoop-2.path.output}/linRegData.bin \\
+           |y=51 OX=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+           |OY=$${system.hadoop-2.path.output}/linRegData.train.labels.bin ofmt=binary
          """.stripMargin.trim,
       config  = ConfigFactory.parseString(""),
       runs    = 1,
@@ -81,9 +81,9 @@ class experiments extends ApplicationContextAware {
         s"""
            |--class org.apache.sysml.api.DMLScript \\
            |$${app.path.apps}/SystemML.jar \\
-           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -nvargs \\
-           |X=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
-           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.csv \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_spark -nvargs \\
+           |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
          """.stripMargin.trim,
       config = ConfigFactory.parseString(""),
@@ -98,10 +98,10 @@ class experiments extends ApplicationContextAware {
       command =
         s"""
            |-c org.apache.sysml.api.DMLScript \\
-           |$${app.path.apps}/SystemML.jar \\
-           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -nvargs \\
-           |X=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
-           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.csv \\
+           |-C file://$${app.path.apps}/hadoop-mapreduce-client-jobclient-2.7.1.jar $${app.path.apps}/SystemML.jar \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_flink -nvargs \\
+           |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
          """.stripMargin.trim,
       config = ConfigFactory.parseString(""),
@@ -115,11 +115,11 @@ class experiments extends ApplicationContextAware {
       name    = "linreg.train.yarn",
       command =
         s"""
-           |jar $${app.path.apps}/SystemML.jar \\
+           |$${app.path.apps}/SystemML.jar \\
            |org.apache.sysml.api.DMLScript \\
            |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -nvargs \\
-           |X=$${system.hadoop-2.path.output}/linRegData.train.data.csv \\
-           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.csv \\
+           |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+           |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
          """.stripMargin.trim,
       config = ConfigFactory.parseString(""),

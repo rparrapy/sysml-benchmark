@@ -39,6 +39,7 @@ mvn -DskipTests -Dhadoop.version=2.7.1 -T1.0C clean package
 
 mkdir "$PEELROOT/apps"
 cp "target/SystemML.jar" "$PEELROOT/apps/"
+cp "target/lib/hadoop-mapreduce-client-jobclient-2.7.1.jar" "$PEELROOT/apps/"
 cp -r "scripts" "$PEELROOT/apps/"
 
 
