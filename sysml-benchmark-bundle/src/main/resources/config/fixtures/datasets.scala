@@ -38,7 +38,7 @@ class datasets extends ApplicationContextAware {
 	 |org.apache.sysml.api.DMLScript \\
          |-f $${app.path.apps}/scripts/datagen/genLinearRegressionData.dml \\
          |-nvargs numSamples=10000000 numFeatures=1000 maxFeatureValue=5 maxWeight=5 \\
-         |addNoise=FALSE b=0 sparsity=1.0 output=$${system.hadoop-2.path.output}/linRegData.csv format=csv perc=0.5
+         |addNoise=FALSE b=0 sparsity=1.0 output=$${system.hadoop-2.path.output}/linRegData.bin format=binary perc=0.5
         """.stripMargin.trim,
     runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
     timeout = 6000
@@ -50,7 +50,7 @@ class datasets extends ApplicationContextAware {
   @Bean(name = Array("linreg.dataset.features"))
   def `linreg.output.features`: DataSet = new GeneratedDataSet(
     src = ctx.getBean("linreg.datagen.features", classOf[YarnJob]),
-    dst = "${system.hadoop-2.path.output}/linRegData.csv",
+    dst = "${system.hadoop-2.path.output}/linRegData.bin",
     fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
   )
 }
