@@ -81,7 +81,7 @@ class experiments extends ApplicationContextAware {
         s"""
            |--class org.apache.sysml.api.DMLScript \\
            |$${app.path.apps}/SystemML.jar \\
-           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_spark -nvargs \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_spark -explain -nvargs \\
            |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
@@ -90,7 +90,7 @@ class experiments extends ApplicationContextAware {
       runs   = runs,
       runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
       inputs = Set(),
-      outputs = Set()
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
     val `linreg.train.flink` = new FlinkExperiment(
@@ -99,7 +99,7 @@ class experiments extends ApplicationContextAware {
         s"""
            |-c org.apache.sysml.api.DMLScript \\
            |-C file://$${app.path.apps}/hadoop-mapreduce-client-jobclient-2.7.1.jar $${app.path.apps}/SystemML.jar \\
-           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_flink -nvargs \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_flink -explain -nvargs \\
            |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
@@ -108,7 +108,7 @@ class experiments extends ApplicationContextAware {
       runs   = runs,
       runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
       inputs = Set(),
-      outputs = Set()
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
     val `linreg.train.yarn` = new YarnExperiment(
@@ -117,7 +117,7 @@ class experiments extends ApplicationContextAware {
         s"""
            |$${app.path.apps}/SystemML.jar \\
            |org.apache.sysml.api.DMLScript \\
-           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -nvargs \\
+           |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -explain -nvargs \\
            |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
@@ -126,7 +126,7 @@ class experiments extends ApplicationContextAware {
       runs   = runs,
       runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       inputs = Set(),
-      outputs = Set(),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput])),
       systems = Set()
     )
 
