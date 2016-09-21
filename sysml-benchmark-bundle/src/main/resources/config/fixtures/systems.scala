@@ -8,6 +8,7 @@ import org.peelframework.hadoop.beans.system.{HDFS2, Yarn}
 import org.peelframework.spark.beans.system.Spark
 import org.springframework.context.annotation.{Bean, Configuration}
 import org.springframework.context.{ApplicationContext, ApplicationContextAware}
+import org.peelframework.dstat.beans.system.Dstat
 
 /** System beans for the 'sysml-benchmark' bundle. */
 @Configuration
@@ -29,7 +30,8 @@ class systems extends ApplicationContextAware {
     version      = "1.0.3",
     configKey    = "flink",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn])),
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
+      ctx.getBean("dstat-0.7.2", classOf[Dstat])),
     //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
@@ -39,7 +41,8 @@ class systems extends ApplicationContextAware {
     version      = "1.6.0",
     configKey    = "spark",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn])),
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
+      ctx.getBean("dstat-0.7.2", classOf[Dstat])),
     //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
@@ -49,7 +52,7 @@ class systems extends ApplicationContextAware {
     version      = "2.7.1",
     configKey    = "hadoop-2",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2])),
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("dstat-0.7.2", classOf[Dstat])),
     //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
