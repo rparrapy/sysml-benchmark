@@ -7,7 +7,7 @@ import org.peelframework.hadoop.beans.experiment.YarnExperiment
 import org.peelframework.spark.beans.experiment.SparkExperiment
 import org.peelframework.spark.beans.system.Spark
 import org.peelframework.flink.beans.system.Flink
-import org.peelframework.flink.beans.experiment.FlinkExperiment
+import eu.stratosphere.benchmarks.systemml.flink.FlinkExperimentSysML
 import org.peelframework.hadoop.beans.system.{Yarn, HDFS2}
 import org.springframework.context.annotation._
 import org.springframework.context.{ApplicationContext, ApplicationContextAware}
@@ -93,7 +93,7 @@ class experiments extends ApplicationContextAware {
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
-    val `linreg.train.flink` = new FlinkExperiment(
+    val `linreg.train.flink` = new FlinkExperimentSysML(
       name    = "linreg.train.flink",
       command =
         s"""
@@ -157,7 +157,7 @@ class experiments extends ApplicationContextAware {
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
-    val `linreg.train.flink` = new FlinkExperiment(
+    val `linreg.train.flink` = new FlinkExperimentSysML(
       name    = "linreg.train.flink",
       command =
         s"""
