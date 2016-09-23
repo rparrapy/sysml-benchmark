@@ -35,10 +35,25 @@ class datasets extends ApplicationContextAware {
     command =
       s"""
          |jar $${app.path.apps}/SystemML.jar \\
-	 |org.apache.sysml.api.DMLScript \\
+         |org.apache.sysml.api.DMLScript \\
          |-f $${app.path.apps}/scripts/datagen/genLinearRegressionData.dml \\
          |-nvargs numSamples=10000000 numFeatures=1000 maxFeatureValue=5 maxWeight=5 \\
          |addNoise=FALSE b=0 sparsity=1.0 output=$${system.hadoop-2.path.output}/linRegData.bin format=binary perc=0.5
+        """.stripMargin.trim,
+    runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+    timeout = 6000
+  )
+
+  @Bean(name = Array("linreg.datagen.features_split"))
+  def `datagen.linreg.features_split`: YarnJob = new YarnJob(
+    command =
+        s"""
+           |jar $${app.path.apps}/SystemML.jar \\
+           |org.apache.sysml.api.DMLScript \\
+           |-f $${app.path.apps}/scripts/utils/splitXY.dml \\
+           |-nvargs X=$${system.hadoop-2.path.output}/linRegData.bin \\
+           |y=51 OX=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+           |OY=$${system.hadoop-2.path.output}/linRegData.train.labels.bin ofmt=binary
         """.stripMargin.trim,
     runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
     timeout = 6000
@@ -51,6 +66,13 @@ class datasets extends ApplicationContextAware {
   def `linreg.output.features`: DataSet = new GeneratedDataSet(
     src = ctx.getBean("linreg.datagen.features", classOf[YarnJob]),
     dst = "${system.hadoop-2.path.output}/linRegData.bin",
+    fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
+  )
+
+  @Bean(name = Array("linreg.dataset.features_split"))
+  def `linreg.output.features_split`: DataSet = new GeneratedDataSet(
+    src = ctx.getBean("linreg.datagen.features_split", classOf[YarnJob]),
+    dst = "${system.hadoop-2.path.output}/linRegData.train.data.bin",
     fs  = ctx.getBean("hdfs-2.7.1", classOf[HDFS2])
   )
 
