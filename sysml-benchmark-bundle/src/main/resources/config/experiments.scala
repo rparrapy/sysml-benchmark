@@ -46,33 +46,6 @@ class experiments extends ApplicationContextAware {
   // Experiments
   // ---------------------------------------------------
 
-  @Bean(name = Array("linreg.generate.data"))
-  def `linreg.generate.data`: ExperimentSuite = {
-    val `linreg.generate.data.yarn` = new YarnExperiment(
-      name    = "linreg.generate.data.yarn",
-      command =
-        s"""
-           | $${app.path.apps}/SystemML.jar \\
-           |org.apache.sysml.api.DMLScript \\
-           |-f $${app.path.apps}/scripts/utils/splitXY.dml \\
-           |-nvargs X=$${system.hadoop-2.path.output}/linRegData.bin \\
-           |y=51 OX=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
-           |OY=$${system.hadoop-2.path.output}/linRegData.train.labels.bin ofmt=binary
-         """.stripMargin.trim,
-      config  = ConfigFactory.parseString(""),
-      runs    = 1,
-      runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
-      inputs  = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet])),
-      outputs = Set(),
-      systems = Set()
-
-    )
-
-    new ExperimentSuite(Seq(
-    `linreg.generate.data.yarn`
-    ))
-  }
-
   @Bean(name = Array("linregDS.train.ds"))
   def `linregDS.train.ds`: ExperimentSuite = {
     val `linreg.train.spark` = new SparkExperiment(
@@ -89,7 +62,7 @@ class experiments extends ApplicationContextAware {
       config = ConfigFactory.parseString(""),
       runs   = runs,
       runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
-      inputs = Set(),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
@@ -107,7 +80,7 @@ class experiments extends ApplicationContextAware {
       config = ConfigFactory.parseString(""),
       runs   = runs,
       runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
-      inputs = Set(),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
@@ -125,7 +98,7 @@ class experiments extends ApplicationContextAware {
       config = ConfigFactory.parseString(""),
       runs   = runs,
       runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
-      inputs = Set(),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput])),
       systems = Set()
     )
@@ -153,7 +126,7 @@ class experiments extends ApplicationContextAware {
       config = ConfigFactory.parseString(""),
       runs   = runs,
       runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
-      inputs = Set(),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
@@ -171,7 +144,7 @@ class experiments extends ApplicationContextAware {
       config = ConfigFactory.parseString(""),
       runs   = runs,
       runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
-      inputs = Set(),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
@@ -189,7 +162,7 @@ class experiments extends ApplicationContextAware {
       config = ConfigFactory.parseString(""),
       runs   = runs,
       runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
-      inputs = Set(),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
       outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput])),
       systems = Set()
     )
