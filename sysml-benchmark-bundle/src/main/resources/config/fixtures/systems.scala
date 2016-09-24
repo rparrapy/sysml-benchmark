@@ -32,7 +32,6 @@ class systems extends ApplicationContextAware {
     lifespan     = Lifespan.EXPERIMENT,
     dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
       ctx.getBean("dstat-0.7.2", classOf[Dstat])),
-    //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
 
@@ -43,7 +42,6 @@ class systems extends ApplicationContextAware {
     lifespan     = Lifespan.EXPERIMENT,
     dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
       ctx.getBean("dstat-0.7.2", classOf[Dstat])),
-    //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
 
@@ -53,7 +51,6 @@ class systems extends ApplicationContextAware {
     configKey    = "hadoop-2",
     lifespan     = Lifespan.EXPERIMENT,
     dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("dstat-0.7.2", classOf[Dstat])),
-    //dependencies = Set(),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
 
@@ -62,7 +59,7 @@ class systems extends ApplicationContextAware {
   def `hdfs-2.7.1`: HDFS2 = new HDFS2(
     version      = "2.7.1",
     configKey    = "hadoop-2",
-    lifespan     = Lifespan.SUITE,
+    lifespan     = Lifespan.PROVIDED,
     dependencies = Set(),
     mc           = ctx.getBean(classOf[Compiler])
   )
