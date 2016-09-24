@@ -34,6 +34,14 @@ import org.springframework.context.{ApplicationContext, ApplicationContextAware}
 class experiments extends ApplicationContextAware {
 
   val runs = 1
+  
+  //don't format hdfs after experiment / suite to keep the data set
+  val no_format = ConfigFactory.parseString(
+    s"""
+       |system.hadoop-2 {
+       |  format = false
+       |}
+         """.stripMargin)
 
   /* The enclosing application context. */
   var ctx: ApplicationContext = null
@@ -59,7 +67,7 @@ class experiments extends ApplicationContextAware {
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
          """.stripMargin.trim,
-      config = ConfigFactory.parseString(""),
+      config = no_format,
       runs   = runs,
       runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
       inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
@@ -77,7 +85,7 @@ class experiments extends ApplicationContextAware {
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
          """.stripMargin.trim,
-      config = ConfigFactory.parseString(""),
+      config = no_format,
       runs   = runs,
       runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
       inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
@@ -95,7 +103,7 @@ class experiments extends ApplicationContextAware {
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
          """.stripMargin.trim,
-      config = ConfigFactory.parseString(""),
+      config = no_format,
       runs   = runs,
       runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
@@ -123,7 +131,7 @@ class experiments extends ApplicationContextAware {
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv maxi=6 fmt=csv
          """.stripMargin.trim,
-      config = ConfigFactory.parseString(""),
+      config = no_format,
       runs   = runs,
       runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
       inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
@@ -141,7 +149,7 @@ class experiments extends ApplicationContextAware {
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv maxi=6 fmt=csv
          """.stripMargin.trim,
-      config = ConfigFactory.parseString(""),
+      config = no_format,
       runs   = runs,
       runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
       inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
@@ -159,7 +167,7 @@ class experiments extends ApplicationContextAware {
            |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
            |B=$${system.hadoop-2.path.output}/betas.csv maxi=6 fmt=csv
          """.stripMargin.trim,
-      config = ConfigFactory.parseString(""),
+      config = no_format,
       runs   = runs,
       runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
