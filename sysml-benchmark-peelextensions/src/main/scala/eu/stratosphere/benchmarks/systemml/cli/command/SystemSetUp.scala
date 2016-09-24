@@ -61,7 +61,16 @@ class SystemSetUp extends Command {
 
     // setup
     for (n <- graph.reverse.traverse(); if graph.descendants(sys).contains(n)) n match {
-      case s: System => if ((Lifespan.PROVIDED :: Lifespan.SUITE :: Lifespan.EXPERIMENT :: Nil contains s.lifespan) && !s.isUp) s.setUp()
+      case s: System => if ((Lifespan.PROVIDED :: Lifespan.SUITE :: Lifespan.EXPERIMENT :: Nil contains s.lifespan) ) {
+        if ((Lifespan.PROVIDED :: Nil contains s.lifespan)) {
+          s.isUp = false
+          s.setUp()
+        } else {
+          if (!s.isUp) {
+            s.setUp()
+          }
+        }
+      }
       case _ => Unit
     }
   }
