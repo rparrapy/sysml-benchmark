@@ -50,18 +50,9 @@ cd "$BUNDLE_SRC"/sysml-benchmark/sysml-benchmark-bundle/src/main/resources/confi
 The next step is to build the Peel bundle:
 ```
 cd "$BUNDLE_SRC"/sysml-benchmark
-mvn clean deploy
+mvn clean deploy -Pdev
 ```
 
-<!--
-Now everything is built. So we need to copy the Peel bundle to the folder where we actually run it.
-```
-mkdir "$BUNDLE_BIN"/sysml-benchmark # create directory if not yet existent
-rm -R "$BUNDLE_BIN"/sysml-benchmark/* # clean directory
-cp -R "$BUNDLE_SRC"/sysml-benchmark/sysml-benchmark-bundle/target/sysml-benchmark/* "$BUNDLE_BIN"/sysml-benchmark/
-cp -R "$BUNDLE_SRC"/sysml-benchmark/sysml-benchmark-bundle/src/main/resources/apps/* "$BUNDLE_BIN"/sysml-benchmark/apps/
-```
--->
 
 ## Peel Bundle Execution
 
@@ -98,10 +89,10 @@ The underlying experiments are the following:
 ### Dev modus
 In this modus we generate the data only once as long the temporary HDFS is not used by other Peel users.
 
-So the first thing to do is to setup the HDFS:
+So the first thing to do is to setup the HDFS (this will also format the namenode of the temporary hdfs):
 
 ```
-./peel.sh system:setup hdfs-2.7.1-provided
+./peel.sh sys:setup hdfs-2.7.1
 ```
 
 Once HDFS is running we can run the suites:
@@ -123,9 +114,3 @@ Or the corresponding experiments:
 ./peel.sh exp:run linregCG.train.ds.provided linreg.train.yarn
 
 ```
-
-After you are finished developing, you can shutdown the HDFS using:
-```
-./peel.sh system:teardown hdfs-2.7.1-provided
-```
-But be careful, this will delete the data!! If you want to prevent that and keep the data, you have to change the parameter `system.hadoop-2.format` to `false` in the `hadoop-2.conf` of your environment.

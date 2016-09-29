@@ -71,9 +71,9 @@ class experiments extends ApplicationContextAware {
          """.stripMargin.trim,
       config = no_format,
       runs   = runs,
-      runner = ctx.getBean("spark-1.6.0-provided", classOf[Spark]),
-      inputs = Set(ctx.getBean("linreg.dataset.features.provided", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split.provided", classOf[DataSet])),
-      outputs = Set(ctx.getBean("linreg.train.ds.output.provided", classOf[ExperimentOutput]))
+      runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
     val `linreg.train.flink` = new FlinkExperimentSysML(
@@ -89,9 +89,9 @@ class experiments extends ApplicationContextAware {
          """.stripMargin.trim,
       config = no_format,
       runs   = runs,
-      runner = ctx.getBean("flink-1.0.3-provided", classOf[Flink]),
-      inputs = Set(ctx.getBean("linreg.dataset.features.provided", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split.provided", classOf[DataSet])),
-      outputs = Set(ctx.getBean("linreg.train.ds.output.provided", classOf[ExperimentOutput]))
+      runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
     val `linreg.train.yarn` = new YarnExperiment(
@@ -107,9 +107,9 @@ class experiments extends ApplicationContextAware {
          """.stripMargin.trim,
       config = no_format,
       runs   = runs,
-      runner = ctx.getBean("yarn-2.7.1-provided", classOf[Yarn]),
-      inputs = Set(ctx.getBean("linreg.dataset.features.provided", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split.provided", classOf[DataSet])),
-      outputs = Set(ctx.getBean("linreg.train.ds.output.provided", classOf[ExperimentOutput])),
+      runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput])),
       systems = Set()
     )
 
@@ -135,9 +135,9 @@ class experiments extends ApplicationContextAware {
          """.stripMargin.trim,
       config = no_format,
       runs   = runs,
-      runner = ctx.getBean("spark-1.6.0-provided", classOf[Spark]),
-      inputs = Set(ctx.getBean("linreg.dataset.features.provided", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split.provided", classOf[DataSet])),
-      outputs = Set(ctx.getBean("linreg.train.ds.output.provided", classOf[ExperimentOutput]))
+      runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
     val `linreg.train.flink` = new FlinkExperimentSysML(
@@ -153,9 +153,9 @@ class experiments extends ApplicationContextAware {
          """.stripMargin.trim,
       config = no_format,
       runs   = runs,
-      runner = ctx.getBean("flink-1.0.3-provided", classOf[Flink]),
-      inputs = Set(ctx.getBean("linreg.dataset.features.provided", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split.provided", classOf[DataSet])),
-      outputs = Set(ctx.getBean("linreg.train.ds.output.provided", classOf[ExperimentOutput]))
+      runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
     )
 
     val `linreg.train.yarn` = new YarnExperiment(
@@ -171,9 +171,9 @@ class experiments extends ApplicationContextAware {
          """.stripMargin.trim,
       config = no_format,
       runs   = runs,
-      runner = ctx.getBean("yarn-2.7.1-provided", classOf[Yarn]),
-      inputs = Set(ctx.getBean("linreg.dataset.features.provided", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split.provided", classOf[DataSet])),
-      outputs = Set(ctx.getBean("linreg.train.ds.output.provided", classOf[ExperimentOutput])),
+      runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput])),
       systems = Set()
     )
 
