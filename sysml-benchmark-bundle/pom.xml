@@ -34,19 +34,7 @@
         <!-- bundle jars -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sysml-benchmark-datagens</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>sysml-benchmark-peelextensions</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>sysml-benchmark-flink-jobs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>sysml-benchmark-spark-jobs</artifactId>
         </dependency>
 
         <!-- Peel -->
@@ -165,15 +153,15 @@
                                     <src>${basedir}/src/main/resources/config</src>
                                     <dst>${project.build.directory}/${project.parent.artifactId}/config</dst>
                                 </link>
-                                <!-- link datasets directory -->
-                                <link>
-                                    <src>${basedir}/src/main/resources/datasets</src>
-                                    <dst>${project.build.directory}/${project.parent.artifactId}/datasets</dst>
-                                </link>
                                 <!-- link utils directory  -->
                                 <link>
                                     <src>${basedir}/src/main/resources/utils</src>
                                     <dst>${project.build.directory}/${project.parent.artifactId}/utils</dst>
+                                </link>
+                                <!-- link apps directory  -->
+                                <link>
+                                    <src>${basedir}/src/main/resources/apps</src>
+                                    <dst>${project.build.directory}/${project.parent.artifactId}/apps</dst>
                                 </link>
                             </links>
                         </configuration>

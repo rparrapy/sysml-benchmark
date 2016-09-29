@@ -43,22 +43,7 @@
                 <artifactId>sysml-benchmark-peelextensions</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sysml-benchmark-datagens</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sysml-benchmark-flink-jobs</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sysml-benchmark-spark-jobs</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-
+            
             <!-- Peel -->
             <dependency>
                 <groupId>org.peelframework</groupId>
@@ -173,8 +158,5 @@
   <modules>
     <module>sysml-benchmark-bundle</module>
     <module>sysml-benchmark-peelextensions</module>
-    <module>sysml-benchmark-datagens</module>
-    <module>sysml-benchmark-flink-jobs</module>
-    <module>sysml-benchmark-spark-jobs</module>
   </modules>
 </project>

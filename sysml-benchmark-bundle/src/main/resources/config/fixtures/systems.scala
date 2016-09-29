@@ -21,8 +21,10 @@ class systems extends ApplicationContextAware {
     this.ctx = ctx
   }
 
+
   // ---------------------------------------------------
   // Systems
+  // using simple temporary hdfs
   // ---------------------------------------------------
 
   @Bean(name = Array("flink-1.0.3"))
@@ -30,7 +32,7 @@ class systems extends ApplicationContextAware {
     version      = "1.0.3",
     configKey    = "flink",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       ctx.getBean("dstat-0.7.2", classOf[Dstat])),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
@@ -40,7 +42,7 @@ class systems extends ApplicationContextAware {
     version      = "1.6.0",
     configKey    = "spark",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       ctx.getBean("dstat-0.7.2", classOf[Dstat])),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
@@ -54,12 +56,11 @@ class systems extends ApplicationContextAware {
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
 
-
   @Bean(name = Array("hdfs-2.7.1"))
   def `hdfs-2.7.1`: HDFS2 = new HDFS2(
     version      = "2.7.1",
     configKey    = "hadoop-2",
-    lifespan     = Lifespan.PROVIDED,
+    lifespan     = Lifespan.SUITE,
     dependencies = Set(),
     mc           = ctx.getBean(classOf[Compiler])
   )
