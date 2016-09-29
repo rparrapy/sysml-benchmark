@@ -1,4 +1,4 @@
-This folder contains host-specific environment configurations for the `flink-hashagg` bundle.
+This folder contains host-specific environment configurations for the `sysml-benchmark` bundle.
 
 If you do not have a host-specific environment configuration for your developer machine, clone and adapt the devhost config.
 

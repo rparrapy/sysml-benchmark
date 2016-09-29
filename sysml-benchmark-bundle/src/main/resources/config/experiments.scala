@@ -52,10 +52,12 @@ class experiments extends ApplicationContextAware {
 
   // ---------------------------------------------------
   // Experiments
+  // Dev mode
+  // generating the dataset only once
   // ---------------------------------------------------
 
-  @Bean(name = Array("linregDS.train.ds"))
-  def `linregDS.train.ds`: ExperimentSuite = {
+  @Bean(name = Array("linregDS.train.ds.provided"))
+  def `linregDS.train.ds.provided`: ExperimentSuite = {
     val `linreg.train.spark` = new SparkExperiment(
       name    = "linreg.train.spark",
       command =
@@ -118,8 +120,8 @@ class experiments extends ApplicationContextAware {
     ))
   }
 
-  @Bean(name = Array("linregCG.train.ds"))
-  def `linregCG.train.ds`: ExperimentSuite = {
+  @Bean(name = Array("linregCG.train.ds.provided"))
+  def `linregCG.train.ds.provided`: ExperimentSuite = {
     val `linreg.train.spark` = new SparkExperiment(
       name    = "linreg.train.spark",
       command =
@@ -168,6 +170,140 @@ class experiments extends ApplicationContextAware {
            |B=$${system.hadoop-2.path.output}/betas.csv maxi=6 fmt=csv
          """.stripMargin.trim,
       config = no_format,
+      runs   = runs,
+      runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput])),
+      systems = Set()
+    )
+
+    new ExperimentSuite(Seq(
+      `linreg.train.spark`,
+      `linreg.train.flink`,
+      `linreg.train.yarn`
+    ))
+  }
+
+  // ---------------------------------------------------
+  // Experiments
+  // User mode
+  // generating the dataset for every suite
+  // ---------------------------------------------------
+
+  @Bean(name = Array("linregDS.train.ds"))
+  def `linregDS.train.ds`: ExperimentSuite = {
+    val `linreg.train.spark` = new SparkExperiment(
+      name    = "linreg.train.spark",
+      command =
+          s"""
+             |--class org.apache.sysml.api.DMLScript \\
+             |$${app.path.apps}/SystemML.jar \\
+             |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_spark -explain -nvargs \\
+             |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+             |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
+             |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
+    )
+
+    val `linreg.train.flink` = new FlinkExperimentSysML(
+      name    = "linreg.train.flink",
+      command =
+          s"""
+             |-c org.apache.sysml.api.DMLScript \\
+             |-C file://$${app.path.apps}/hadoop-mapreduce-client-jobclient-2.7.1.jar $${app.path.apps}/SystemML.jar \\
+             |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -exec hybrid_flink -explain -nvargs \\
+             |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+             |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
+             |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
+    )
+
+    val `linreg.train.yarn` = new YarnExperiment(
+      name    = "linreg.train.yarn",
+      command =
+          s"""
+             |$${app.path.apps}/SystemML.jar \\
+             |org.apache.sysml.api.DMLScript \\
+             |-f $${app.path.apps}/scripts/algorithms/LinearRegDS.dml -explain -nvargs \\
+             |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+             |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
+             |B=$${system.hadoop-2.path.output}/betas.csv fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput])),
+      systems = Set()
+    )
+
+    new ExperimentSuite(Seq(
+      `linreg.train.spark`,
+      `linreg.train.flink`,
+      `linreg.train.yarn`
+    ))
+  }
+
+  @Bean(name = Array("linregCG.train.ds"))
+  def `linregCG.train.ds`: ExperimentSuite = {
+    val `linreg.train.spark` = new SparkExperiment(
+      name    = "linreg.train.spark",
+      command =
+          s"""
+             |--class org.apache.sysml.api.DMLScript \\
+             |$${app.path.apps}/SystemML.jar \\
+             |-f $${app.path.apps}/scripts/algorithms/LinearRegCG.dml -exec hybrid_spark -explain -nvargs \\
+             |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+             |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
+             |B=$${system.hadoop-2.path.output}/betas.csv maxi=6 fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("spark-1.6.0", classOf[Spark]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
+    )
+
+    val `linreg.train.flink` = new FlinkExperimentSysML(
+      name    = "linreg.train.flink",
+      command =
+          s"""
+             |-c org.apache.sysml.api.DMLScript \\
+             |-C file://$${app.path.apps}/hadoop-mapreduce-client-jobclient-2.7.1.jar $${app.path.apps}/SystemML.jar \\
+             |-f $${app.path.apps}/scripts/algorithms/LinearRegCG.dml -exec hybrid_flink -explain -nvargs \\
+             |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+             |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
+             |B=$${system.hadoop-2.path.output}/betas.csv maxi=6 fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
+      runs   = runs,
+      runner = ctx.getBean("flink-1.0.3", classOf[Flink]),
+      inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
+      outputs = Set(ctx.getBean("linreg.train.ds.output", classOf[ExperimentOutput]))
+    )
+
+    val `linreg.train.yarn` = new YarnExperiment(
+      name    = "linreg.train.yarn",
+      command =
+          s"""
+             |$${app.path.apps}/SystemML.jar \\
+             |org.apache.sysml.api.DMLScript \\
+             |-f $${app.path.apps}/scripts/algorithms/LinearRegCG.dml -explain -nvargs \\
+             |X=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+             |Y=$${system.hadoop-2.path.output}/linRegData.train.labels.bin \\
+             |B=$${system.hadoop-2.path.output}/betas.csv maxi=6 fmt=csv
+         """.stripMargin.trim,
+      config = ConfigFactory.parseString(""),
       runs   = runs,
       runner = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       inputs = Set(ctx.getBean("linreg.dataset.features", classOf[DataSet]), ctx.getBean("linreg.dataset.features_split", classOf[DataSet])),
