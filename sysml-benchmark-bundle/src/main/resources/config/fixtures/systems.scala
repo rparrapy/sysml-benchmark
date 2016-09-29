@@ -23,6 +23,51 @@ class systems extends ApplicationContextAware {
 
   // ---------------------------------------------------
   // Systems
+  // using provided temporary hdfs
+  // ---------------------------------------------------
+
+  @Bean(name = Array("flink-1.0.3-provided"))
+  def `flink-1.0.3-provided`: Flink = new Flink(
+    version      = "1.0.3",
+    configKey    = "flink",
+    lifespan     = Lifespan.EXPERIMENT,
+    dependencies = Set(ctx.getBean("hdfs-2.7.1-provided", classOf[HDFS2]), ctx.getBean("yarn-2.7.1-provided", classOf[Yarn]), 
+      ctx.getBean("dstat-0.7.2", classOf[Dstat])),
+    mc           = ctx.getBean(classOf[Mustache.Compiler])
+  )
+
+  @Bean(name = Array("spark-1.6.0-provided"))
+  def `spark-1.6.0-provided`: Spark = new Spark(
+    version      = "1.6.0",
+    configKey    = "spark",
+    lifespan     = Lifespan.EXPERIMENT,
+    dependencies = Set(ctx.getBean("hdfs-2.7.1-provided", classOf[HDFS2]), ctx.getBean("yarn-2.7.1-provided", classOf[Yarn]), 
+      ctx.getBean("dstat-0.7.2", classOf[Dstat])),
+    mc           = ctx.getBean(classOf[Mustache.Compiler])
+  )
+
+  @Bean(name = Array("yarn-2.7.1-provided"))
+  def `yarn-2.7.1-provided`: Yarn = new Yarn(
+    version      = "2.7.1",
+    configKey    = "hadoop-2",
+    lifespan     = Lifespan.EXPERIMENT,
+    dependencies = Set(ctx.getBean("hdfs-2.7.1-provided", classOf[HDFS2]), ctx.getBean("dstat-0.7.2", classOf[Dstat])),
+    mc           = ctx.getBean(classOf[Mustache.Compiler])
+  )
+
+  @Bean(name = Array("hdfs-2.7.1-provided"))
+  def `hdfs-2.7.1-provided`: HDFS2 = new HDFS2(
+    version      = "2.7.1",
+    configKey    = "hadoop-2",
+    lifespan     = Lifespan.PROVIDED,
+    dependencies = Set(),
+    mc           = ctx.getBean(classOf[Compiler])
+  )
+
+
+  // ---------------------------------------------------
+  // Systems
+  // using simple temporary hdfs
   // ---------------------------------------------------
 
   @Bean(name = Array("flink-1.0.3"))
@@ -30,7 +75,7 @@ class systems extends ApplicationContextAware {
     version      = "1.0.3",
     configKey    = "flink",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       ctx.getBean("dstat-0.7.2", classOf[Dstat])),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
@@ -40,7 +85,7 @@ class systems extends ApplicationContextAware {
     version      = "1.6.0",
     configKey    = "spark",
     lifespan     = Lifespan.EXPERIMENT,
-    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]), 
+    dependencies = Set(ctx.getBean("hdfs-2.7.1", classOf[HDFS2]), ctx.getBean("yarn-2.7.1", classOf[Yarn]),
       ctx.getBean("dstat-0.7.2", classOf[Dstat])),
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
@@ -54,12 +99,11 @@ class systems extends ApplicationContextAware {
     mc           = ctx.getBean(classOf[Mustache.Compiler])
   )
 
-
   @Bean(name = Array("hdfs-2.7.1"))
   def `hdfs-2.7.1`: HDFS2 = new HDFS2(
     version      = "2.7.1",
     configKey    = "hadoop-2",
-    lifespan     = Lifespan.PROVIDED,
+    lifespan     = Lifespan.SUITE,
     dependencies = Set(),
     mc           = ctx.getBean(classOf[Compiler])
   )
