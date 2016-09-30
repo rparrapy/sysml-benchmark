@@ -25,6 +25,9 @@ class datasets extends ApplicationContextAware {
   def setApplicationContext(ctx: ApplicationContext): Unit = {
     this.ctx = ctx
   }
+  
+  val numSamples  = 10000000 //number of rows
+  val numFeatures = 1000     //number of columns
 
 
   // ---------------------------------------------------
@@ -37,7 +40,7 @@ class datasets extends ApplicationContextAware {
          |jar $${app.path.apps}/SystemML.jar \\
          |org.apache.sysml.api.DMLScript \\
          |-f $${app.path.apps}/scripts/datagen/genLinearRegressionData.dml \\
-         |-nvargs numSamples=10000000 numFeatures=1000 maxFeatureValue=5 maxWeight=5 \\
+         |-nvargs numSamples=${numSamples} numFeatures=${numFeatures} maxFeatureValue=5 maxWeight=5 \\
          |addNoise=FALSE b=0 sparsity=1.0 output=$${system.hadoop-2.path.output}/linRegData.bin format=binary perc=0.5
         """.stripMargin.trim,
     runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),
@@ -52,7 +55,7 @@ class datasets extends ApplicationContextAware {
            |org.apache.sysml.api.DMLScript \\
            |-f $${app.path.apps}/scripts/utils/splitXY.dml \\
            |-nvargs X=$${system.hadoop-2.path.output}/linRegData.bin \\
-           |y=51 OX=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
+           |y=${numFeatures + 1} OX=$${system.hadoop-2.path.output}/linRegData.train.data.bin \\
            |OY=$${system.hadoop-2.path.output}/linRegData.train.labels.bin ofmt=binary
         """.stripMargin.trim,
     runner  = ctx.getBean("yarn-2.7.1", classOf[Yarn]),

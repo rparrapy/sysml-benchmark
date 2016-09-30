@@ -24,7 +24,6 @@ class systems extends ApplicationContextAware {
 
   // ---------------------------------------------------
   // Systems
-  // using simple temporary hdfs
   // ---------------------------------------------------
 
   @Bean(name = Array("flink-1.0.3"))
