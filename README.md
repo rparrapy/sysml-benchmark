@@ -1,9 +1,9 @@
 # SystemML Benchmark Peel Bundle
 
 This Peel bundle benchmarks specific versions of Apache SystemML for different backends: 
-1) Flink-1.0.3
-2) Spark-1.6.0
-3) Yarn-2.7.1
+1. Flink-1.0.3
+2. Spark-1.6.0
+3. Yarn-2.7.1
 
 ## Peel Bundle Setup
 For Peel we always use two directories - one to develop bundles and one to run the bundles. 
