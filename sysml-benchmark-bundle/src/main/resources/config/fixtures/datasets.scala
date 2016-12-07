@@ -12,9 +12,10 @@ import org.peelframework.hadoop.beans.system.{HDFS2, Yarn}
 import org.peelframework.spark.beans.experiment.SparkExperiment
 import org.peelframework.spark.beans.system.Spark
 import org.peelframework.spark.beans.job.SparkJob
+import org.peelframework.hadoop.beans.job.YarnJob
 import org.springframework.context.{ApplicationContext, ApplicationContextAware}
 import org.springframework.context.annotation.{Bean, Configuration}
-import eu.stratosphere.benchmarks.systemml.yarn.YarnJob
+
 
 /** `LinRegDS` experiment fixtures for the 'sysml-benchmark' bundle. */
 @Configuration
@@ -37,7 +38,7 @@ class datasets extends ApplicationContextAware {
   def `datagen.linreg.features`: YarnJob = new YarnJob(
     command =
       s"""
-         |jar $${app.path.apps}/SystemML.jar \\
+         |$${app.path.apps}/SystemML.jar \\
          |org.apache.sysml.api.DMLScript \\
          |-f $${app.path.apps}/scripts/datagen/genLinearRegressionData.dml \\
          |-nvargs numSamples=${numSamples} numFeatures=${numFeatures} maxFeatureValue=5 maxWeight=5 \\
@@ -51,7 +52,7 @@ class datasets extends ApplicationContextAware {
   def `datagen.linreg.features_split`: YarnJob = new YarnJob(
     command =
         s"""
-           |jar $${app.path.apps}/SystemML.jar \\
+           |$${app.path.apps}/SystemML.jar \\
            |org.apache.sysml.api.DMLScript \\
            |-f $${app.path.apps}/scripts/utils/splitXY.dml \\
            |-nvargs X=$${system.hadoop-2.path.output}/linRegData.bin \\
