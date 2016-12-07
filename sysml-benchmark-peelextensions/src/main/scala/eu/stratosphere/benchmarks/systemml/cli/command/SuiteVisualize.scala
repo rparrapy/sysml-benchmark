@@ -117,7 +117,7 @@ class SuiteVisualize extends Command {
         throw new Exception("no results found for suite " + suiteName)
       }*/
 
-      val suitePathString = "/home/felix/broadcast/ibm-power-1-one-dir" //suitePath.toString
+      val suitePathString = "/home/felix/dstat_test/linregDS.train.ds" //suitePath.toString
 
       var suiteData = new SuiteData(suite)
 
@@ -133,6 +133,7 @@ class SuiteVisualize extends Command {
           val expDir: String = RunName(e.name, r)
 
           val dstatFolder = suitePathString + "/" + expDir + "/logs/dstat/dstat-0.7.2"
+          println("dstat folder: " + dstatFolder)
           
           if (new File(dstatFolder).exists()) {
             suiteData.experiments.last.runs += runData
@@ -146,7 +147,7 @@ class SuiteVisualize extends Command {
               val bufferedSource = io.Source.fromFile(dstatFolder + "/" + csv)
               var i = 1
               for (line <- bufferedSource.getLines) {
-                val cols = line.split(",").map(_.trim)
+                var cols = line.split(",").map(_.trim)
                 //register categories
                 if (cats == null && i == 6) {
                   cats = ArrayBuffer.empty[Category]
@@ -159,11 +160,12 @@ class SuiteVisualize extends Command {
                       cats.last.endID = c
                     }
                   }
+                  cats.foreach(t => println("cat: " + t.name));
                 }
                 //register titles
                 if (headers == null && i == 7) {
                   var headers = ArrayBuffer.empty[Metric]
-                  val headersArray = cols.map(s => s.filterNot(_ == '"'))
+                  val headersArray = cols.map(s => s.filterNot(_ == '"').filterNot(_ == '/'))
 
                   for (h <- 0 until headersArray.size) {
                     for (c <- cats) {
@@ -172,9 +174,14 @@ class SuiteVisualize extends Command {
                       }
                     }
                   }
+                  headers.foreach(t => println("header: " + t.id + " " + t.name + " " + t.category.name));
                   suiteData.dstatMetricsSchema = new Schema(headers)
                 }
                 if (i > 7) {
+                  if (cols.last.contains(" / ")) {
+                    val splits = cols.last.split("(/)|( )|(:)")
+                    cols(cols.length - 1) = splits(3)
+                  }
                   suiteData.insertNewTimeStepForLastInsertedExperiment((cols.map(_.toDouble).to[ArrayBuffer]))
                 }
                 i += 1
@@ -202,6 +209,7 @@ class SuiteVisualize extends Command {
           }
         }
       }
+      
       
       //calculate timeseries for charts
       var chartsAgg = ArrayBuffer.empty[Chart]      
