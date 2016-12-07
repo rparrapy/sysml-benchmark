@@ -124,6 +124,8 @@ class SuiteVisualize extends Command {
       var cats: ArrayBuffer[Category] = null
       var headers: ArrayBuffer[Metric] = null
       
+      var ioProcessFieldID = -1
+      
       for (e <- suite.experiments) {
         println(e.name + " - " + e.runs)
         var experimentData = new ExperimentData(e)
@@ -171,6 +173,9 @@ class SuiteVisualize extends Command {
                     for (c <- cats) {
                       if (c.startID <= h && c.endID >= h) {
                         headers += new Metric(h, headersArray(h), c)
+                        if (headersArray(h).equals("io process")) {
+                          ioProcessFieldID = h
+                        }
                       }
                     }
                   }
@@ -178,8 +183,9 @@ class SuiteVisualize extends Command {
                   suiteData.dstatMetricsSchema = new Schema(headers)
                 }
                 if (i > 7) {
-                  if (cols.last.contains(" / ")) {
-                    val splits = cols.last.split("(/)|( )|(:)")
+                  //parse IO process field
+                  if (ioProcessFieldID >= 0 && cols(ioProcessFieldID).contains(" / ")) {
+                    val splits = cols(ioProcessFieldID).split("(/)|( )|(:)")
                     cols(cols.length - 1) = splits(3)
                   }
                   suiteData.insertNewTimeStepForLastInsertedExperiment((cols.map(_.toDouble).to[ArrayBuffer]))
