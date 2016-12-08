@@ -112,12 +112,13 @@ class SuiteVisualize extends Command {
         print ("experiment: " + e.name + " path: " + suitePath + "\n")
       }
       
-      /*
+      
       if (!new File(suitePath.toString).exists()){
         throw new Exception("no results found for suite " + suiteName)
-      }*/
+      }
 
-      val suitePathString = "/home/felix/dstat_test/linregDS.train.ds" //suitePath.toString
+      //val suitePathString = "/home/felix/dstat_test/linregDS.train.ds" //suitePath.toString
+      val suitePathString = suitePath.toString
 
       var suiteData = new SuiteData(suite)
 
