@@ -126,6 +126,7 @@ class SuiteVisualize extends Command {
       var headers: ArrayBuffer[Metric] = null
       
       var ioProcessFieldID = -1
+      var ioProcessFieldID2 = -1
       
       for (e <- suite.experiments) {
         println(e.name + " - " + e.runs)
@@ -152,7 +153,7 @@ class SuiteVisualize extends Command {
               for (line <- bufferedSource.getLines) {
                 var cols = line.split(",").map(_.trim)
                 //register categories
-                if (cats == null && i == 6) {
+                if (cats == null && i == 5) {
                   cats = ArrayBuffer.empty[Category]
                   for (c <- 0 until cols.size) {
                     if (cols(c).length > 0) {
@@ -166,7 +167,7 @@ class SuiteVisualize extends Command {
                   cats.foreach(t => println("cat: " + t.name));
                 }
                 //register titles
-                if (headers == null && i == 7) {
+                if (headers == null && i == 6) {
                   var headers = ArrayBuffer.empty[Metric]
                   val headersArray = cols.map(s => s.filterNot(_ == '"').filterNot(_ == '/'))
 
@@ -177,17 +178,24 @@ class SuiteVisualize extends Command {
                         if (headersArray(h).equals("io process")) {
                           ioProcessFieldID = h
                         }
+                        if (headersArray(h).equals("block io process")) {
+                          ioProcessFieldID2 = h
+                        }
                       }
                     }
                   }
                   headers.foreach(t => println("header: " + t.id + " " + t.name + " " + t.category.name));
                   suiteData.dstatMetricsSchema = new Schema(headers)
                 }
-                if (i > 7) {
+                if (i > 6) {
                   //parse IO process field
                   if (ioProcessFieldID >= 0 && cols(ioProcessFieldID).contains(" / ")) {
                     val splits = cols(ioProcessFieldID).split("(/)|( )|(:)")
-                    cols(cols.length - 1) = splits(3)
+                    cols(ioProcessFieldID) = splits(3)
+                  }
+                  if (ioProcessFieldID2 >= 0 && cols(ioProcessFieldID2).contains(" / ")) {
+                    val splits = cols(ioProcessFieldID2).split("(/)|( )|(:)")
+                    cols(ioProcessFieldID2) = splits(3)
                   }
                   suiteData.insertNewTimeStepForLastInsertedExperiment((cols.map(_.toDouble).to[ArrayBuffer]))
                 }
