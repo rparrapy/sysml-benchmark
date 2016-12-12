@@ -114,3 +114,27 @@ Or the corresponding experiments:
 ./peel.sh exp:run linregCG.train.ds.provided linreg.train.yarn
 
 ```
+
+## Dstat visualization
+Generate charts from Dstat monitoring:
+```
+./peel.sh suite:vi linregDS.train.ds
+./peel.sh suite:vi linregCG.train.ds
+
+./peel.sh suite:vi linregDS.train.ds.provided
+./peel.sh suite:vi linregCG.train.ds.provided
+
+```
+You can find all generated charts in: 
+```
+cd "$BUNDLE_BIN"/sysml-benchmark/charts
+```
+You can also generate charts which are comparable between all experiments within the suite using the parameter "-c":
+```
+./peel.sh suite:vi -c linregDS.train.ds
+./peel.sh suite:vi -c linregCG.train.ds
+
+./peel.sh suite:vi -c linregDS.train.ds.provided
+./peel.sh suite:vi -c linregCG.train.ds.provided
+
+```
